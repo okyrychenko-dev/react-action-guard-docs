@@ -9,18 +9,18 @@ Complete API documentation for React Action Guard DevTools.
 Main DevTools component that displays the debugging panel.
 
 ```typescript
-function ActionGuardDevtools(props: ActionGuardDevtoolsProps): JSX.Element
+function ActionGuardDevtools(props: ActionGuardDevtoolsProps): ReactElement;
 ```
 
 **Props:**
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `position` | `'left' \| 'right'` | `'right'` | Position of the panel |
-| `defaultOpen` | `boolean` | `false` | Whether panel starts open |
-| `maxEvents` | `number` | `200` | Maximum events to keep in history |
-| `showInProduction` | `boolean` | `false` | Show in production (not recommended) |
-| `store` | `UIBlockingStoreApi` | global store | Custom store instance |
+| Prop               | Type                 | Default      | Description                          |
+| ------------------ | -------------------- | ------------ | ------------------------------------ |
+| `position`         | `'left' \| 'right'`  | `'right'`    | Position of the panel                |
+| `defaultOpen`      | `boolean`            | `false`      | Whether panel starts open            |
+| `maxEvents`        | `number`             | `200`        | Maximum events to keep in history    |
+| `showInProduction` | `boolean`            | `false`      | Show in production (not recommended) |
+| `store`            | `UIBlockingStoreApi` | global store | Custom store instance                |
 
 **Examples:**
 
@@ -60,7 +60,7 @@ Access the DevTools internal store.
 function useDevtoolsStore<T>(
   selector: (state: DevtoolsStore) => T,
   equalityFn?: (a: T, b: T) => boolean
-): T
+): T;
 ```
 
 **DevtoolsStore Interface:**
@@ -73,7 +73,7 @@ interface DevtoolsStore {
   isMinimized: boolean;
   isPaused: boolean;
   filter: DevtoolsFilter;
-  
+
   // Actions
   addEvent: (event: DevtoolsEvent) => void;
   clearEvents: () => void;
@@ -88,16 +88,16 @@ interface DevtoolsStore {
 
 ```tsx
 // Get events
-const events = useDevtoolsStore(state => state.events);
+const events = useDevtoolsStore((state) => state.events);
 
 // Check if open
-const isOpen = useDevtoolsStore(state => state.isOpen);
+const isOpen = useDevtoolsStore((state) => state.isOpen);
 
 // Get filtered events
 const filteredEvents = useDevtoolsStore(selectFilteredEvents);
 
 // Access multiple values
-const { isOpen, isPaused } = useDevtoolsStore(state => ({
+const { isOpen, isPaused } = useDevtoolsStore((state) => ({
   isOpen: state.isOpen,
   isPaused: state.isPaused,
 }));
@@ -110,7 +110,7 @@ const { isOpen, isPaused } = useDevtoolsStore(state => ({
 Get DevTools actions without subscribing to state.
 
 ```typescript
-function useDevtoolsActions(): DevtoolsActions
+function useDevtoolsActions(): DevtoolsActions;
 ```
 
 **Returns:**
@@ -130,7 +130,7 @@ interface DevtoolsActions {
 ```tsx
 function CustomDevtoolsControls() {
   const { toggleOpen, clearEvents } = useDevtoolsActions();
-  
+
   return (
     <div>
       <button onClick={toggleOpen}>Toggle DevTools</button>
@@ -151,7 +151,7 @@ Pre-built selectors for common queries.
 Get events matching current filter.
 
 ```typescript
-function selectFilteredEvents(state: DevtoolsStore): DevtoolsEvent[]
+function selectFilteredEvents(state: DevtoolsStore): DevtoolsEvent[];
 ```
 
 **Example:**
@@ -167,7 +167,7 @@ const filteredEvents = useDevtoolsStore(selectFilteredEvents);
 Get currently active blockers from events.
 
 ```typescript
-function selectActiveBlockers(state: DevtoolsStore): ActiveBlocker[]
+function selectActiveBlockers(state: DevtoolsStore): ActiveBlocker[];
 ```
 
 **Example:**
@@ -177,7 +177,7 @@ const activeBlockers = useDevtoolsStore(selectActiveBlockers);
 
 return (
   <div>
-    {activeBlockers.map(blocker => (
+    {activeBlockers.map((blocker) => (
       <div key={blocker.id}>
         {blocker.reason} (Priority: {blocker.priority})
       </div>
@@ -193,7 +193,7 @@ return (
 Get list of all unique scopes from events.
 
 ```typescript
-function selectUniqueScopes(state: DevtoolsStore): string[]
+function selectUniqueScopes(state: DevtoolsStore): string[];
 ```
 
 **Example:**
@@ -204,8 +204,10 @@ const scopes = useDevtoolsStore(selectUniqueScopes);
 return (
   <select>
     <option value="">All Scopes</option>
-    {scopes.map(scope => (
-      <option key={scope} value={scope}>{scope}</option>
+    {scopes.map((scope) => (
+      <option key={scope} value={scope}>
+        {scope}
+      </option>
     ))}
   </select>
 );
@@ -218,7 +220,7 @@ return (
 Get statistics about events.
 
 ```typescript
-function selectEventStats(state: DevtoolsStore): EventStats
+function selectEventStats(state: DevtoolsStore): EventStats;
 
 interface EventStats {
   total: number;
@@ -263,7 +265,13 @@ interface DevtoolsEvent {
   duration?: number; // For completed events
 }
 
-type BlockingAction = 'add' | 'update' | 'remove' | 'timeout' | 'clear' | 'clear_scope';
+type BlockingAction =
+  | "add"
+  | "update"
+  | "remove"
+  | "timeout"
+  | "clear"
+  | "clear_scope";
 ```
 
 ---
@@ -274,12 +282,13 @@ Filter configuration for events.
 
 ```typescript
 interface DevtoolsFilter {
-  searchText: string;        // Filter by ID or reason
+  searchText: string; // Filter by ID or reason
   actions: BlockingAction[]; // Filter by action types
-  scopes: string[];          // Filter by scopes
-  minPriority: number;       // Minimum priority
-  maxPriority: number;       // Maximum priority
-  timeRange?: {              // Time range filter
+  scopes: string[]; // Filter by scopes
+  minPriority: number; // Minimum priority
+  maxPriority: number; // Maximum priority
+  timeRange?: {
+    // Time range filter
     start: number;
     end: number;
   };
@@ -292,20 +301,20 @@ interface DevtoolsFilter {
 const { setFilter } = useDevtoolsActions();
 
 // Filter by search text
-setFilter({ searchText: 'user-form' });
+setFilter({ searchText: "user-form" });
 
 // Filter by actions
-setFilter({ actions: ['add', 'timeout'] });
+setFilter({ actions: ["add", "timeout"] });
 
 // Filter by scope
-setFilter({ scopes: ['form', 'checkout'] });
+setFilter({ scopes: ["form", "checkout"] });
 
 // Filter by priority range
 setFilter({ minPriority: 50, maxPriority: 100 });
 
 // Clear filter
 setFilter({
-  searchText: '',
+  searchText: "",
   actions: [],
   scopes: [],
   minPriority: 0,
@@ -341,13 +350,13 @@ Create DevTools middleware instance.
 ```typescript
 function createDevtoolsMiddleware(
   devtoolsStore?: StoreApi<DevtoolsStore>
-): Middleware
+): Middleware;
 ```
 
 **Parameters:**
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
+| Parameter       | Type                      | Description                    |
+| --------------- | ------------------------- | ------------------------------ |
 | `devtoolsStore` | `StoreApi<DevtoolsStore>` | Optional custom DevTools store |
 
 **Returns:** Middleware function
@@ -355,16 +364,18 @@ function createDevtoolsMiddleware(
 **Example:**
 
 ```tsx
-import { createDevtoolsMiddleware, DEVTOOLS_MIDDLEWARE_NAME } from '@okyrychenko-dev/react-action-guard-devtools';
-import { uiBlockingStoreApi } from '@okyrychenko-dev/react-action-guard';
+import {
+  createDevtoolsMiddleware,
+  DEVTOOLS_MIDDLEWARE_NAME,
+} from "@okyrychenko-dev/react-action-guard-devtools";
+import { uiBlockingStoreApi } from "@okyrychenko-dev/react-action-guard";
 
 // Create and register middleware
 const middleware = createDevtoolsMiddleware();
 
-uiBlockingStoreApi.getState().registerMiddleware(
-  DEVTOOLS_MIDDLEWARE_NAME,
-  middleware
-);
+uiBlockingStoreApi
+  .getState()
+  .registerMiddleware(DEVTOOLS_MIDDLEWARE_NAME, middleware);
 
 // Later: unregister
 uiBlockingStoreApi.getState().unregisterMiddleware(DEVTOOLS_MIDDLEWARE_NAME);
@@ -377,7 +388,7 @@ uiBlockingStoreApi.getState().unregisterMiddleware(DEVTOOLS_MIDDLEWARE_NAME);
 Constant name for DevTools middleware.
 
 ```typescript
-const DEVTOOLS_MIDDLEWARE_NAME = '__devtools__';
+const DEVTOOLS_MIDDLEWARE_NAME = "__devtools__";
 ```
 
 Use this constant when manually registering/unregistering middleware.
@@ -401,7 +412,7 @@ const DEFAULT_MAX_EVENTS = 200;
 Default panel position.
 
 ```typescript
-const DEFAULT_POSITION = 'right';
+const DEFAULT_POSITION = "right";
 ```
 
 ---
@@ -413,16 +424,16 @@ const DEFAULT_POSITION = 'right';
 Format milliseconds to human-readable duration.
 
 ```typescript
-function formatDuration(ms: number): string
+function formatDuration(ms: number): string;
 ```
 
 **Examples:**
 
 ```typescript
-formatDuration(500);      // "500ms"
-formatDuration(1500);     // "1.5s"
-formatDuration(65000);    // "1m 5s"
-formatDuration(3665000);  // "1h 1m 5s"
+formatDuration(500); // "500ms"
+formatDuration(1500); // "1.5s"
+formatDuration(65000); // "1m 5s"
+formatDuration(3665000); // "1h 1m 5s"
 ```
 
 ---
@@ -432,14 +443,17 @@ formatDuration(3665000);  // "1h 1m 5s"
 Format timestamp to human-readable time.
 
 ```typescript
-function formatTimestamp(timestamp: number, format?: 'time' | 'datetime'): string
+function formatTimestamp(
+  timestamp: number,
+  format?: "time" | "datetime"
+): string;
 ```
 
 **Examples:**
 
 ```typescript
-formatTimestamp(Date.now());                  // "14:30:45"
-formatTimestamp(Date.now(), 'datetime');      // "2024-01-15 14:30:45"
+formatTimestamp(Date.now()); // "14:30:45"
+formatTimestamp(Date.now(), "datetime"); // "2024-01-15 14:30:45"
 ```
 
 ---
@@ -453,17 +467,17 @@ function CustomDevtools() {
   const events = useDevtoolsStore(selectFilteredEvents);
   const activeBlockers = useDevtoolsStore(selectActiveBlockers);
   const { clearEvents, setFilter } = useDevtoolsActions();
-  
+
   return (
     <div className="custom-devtools">
       <div className="header">
         <h3>React Action Guard DevTools</h3>
         <button onClick={clearEvents}>Clear</button>
       </div>
-      
+
       <div className="active-blockers">
         <h4>Active ({activeBlockers.length})</h4>
-        {activeBlockers.map(blocker => (
+        {activeBlockers.map((blocker) => (
           <div key={blocker.id} className="blocker">
             <span className="reason">{blocker.reason}</span>
             <span className="priority">P{blocker.priority}</span>
@@ -471,10 +485,10 @@ function CustomDevtools() {
           </div>
         ))}
       </div>
-      
+
       <div className="timeline">
         <h4>Timeline ({events.length})</h4>
-        {events.map(event => (
+        {events.map((event) => (
           <TimelineEvent key={event.id} event={event} />
         ))}
       </div>

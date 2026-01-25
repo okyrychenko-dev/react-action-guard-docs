@@ -1,6 +1,6 @@
 {
   "name": "@okyrychenko-dev/react-action-guard-docs",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Documentation for React Action Guard - Elegant UI blocking management for React applications",
   "type": "module",
   "scripts": {
